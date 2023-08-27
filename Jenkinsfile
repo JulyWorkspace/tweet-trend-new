@@ -9,9 +9,19 @@ pipeline{
         stage("Build"){
             steps{
                 echo "==========Start Building Project from main branch==========="
-                sh 'mvn clean deploy'
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
+                echo "=====================Build Completed========================"
             }
         }
+
+        stage("Test"){
+            steps{
+                echo "==========Unit Testing Started==========="
+                sh 'mvn surefire-report:report'
+                echo "==========Unit Test Completed============"
+            }
+        }
+
         stage('SonarQube analysis') {
             environment {
                 scannerHome = tool 'sonar-scanner'
