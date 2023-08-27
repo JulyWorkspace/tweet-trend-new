@@ -1,4 +1,6 @@
 def registry = 'https://galaxy01.jfrog.io'
+def imageName = 'galaxy01.jfrog.io/artifactory/galaxy02-docker-local/'
+def version   = '2.1.4'
 pipeline{
     agent{
         label "maven"
@@ -68,6 +70,28 @@ pipeline{
                     echo '<--------------- Jar Publish Ended --------------->'  
                     }
                 }   
+            }
+        stage(" Docker Build ") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build(imageName+":"+version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                    }
+                }
+            }
+
+        stage (" Docker Publish "){
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'  
+                    docker.withRegistry(registry, 'Jfrog-access-token'){
+                        app.push()
+                    }    
+                    echo '<--------------- Docker Publish Ended --------------->'  
+                }
+            }
         }
+
     }
 }
