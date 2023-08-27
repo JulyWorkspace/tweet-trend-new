@@ -9,7 +9,7 @@ pipeline{
         stage("Build"){
             steps{
                 echo "==========Start Building Project from main branch==========="
-                sh 'mvn clean install'
+                sh 'mvn clean deploy'
             }
         }
         stage('SonarQube analysis') {
